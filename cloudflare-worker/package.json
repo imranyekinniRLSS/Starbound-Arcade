@@ -1,0 +1,8 @@
+{
+  "name": "starbound-arcade-cloudflare-api",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test"
+  }
+}

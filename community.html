@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#11102c">
+    <title>Arcade Hub | Starbound Arcade</title>
+    <link rel="stylesheet" href="styles.css?v=20261027">
+</head>
+<body>
+    <main class="page-shell community-shell">
+        <header class="game-topbar">
+            <a class="brand" href="game.html" aria-label="Starbound Arcade home"><span class="brand-mark" aria-hidden="true">✦</span><span>STARBOUND <span class="brand-light">ARCADE</span></span></a>
+            <div class="community-account"><span id="community-player">Player</span><a class="back-link" href="game.html">3D games ↗</a><button class="fullscreen-button" type="button" data-fullscreen-target="website">Fullscreen website</button></div>
+        </header>
+        <aside class="beta-notice" aria-label="Beta notice">
+            <strong>BETA</strong>
+            <span>Starbound Arcade is still being tested. Some features may be incomplete or temporarily unavailable.</span>
+        </aside>
+
+        <section id="community-loading" class="arcade-auth-check" role="status">Checking your player session<span class="loading-dots">...</span></section>
+        <section id="community-app" hidden>
+            <header class="arcade-heading">
+                <span class="game-overline">THE STARBOUND HUB</span>
+                <h1>Your next <span>adventure.</span></h1>
+                <p>Daily challenges, live matches, community-made games, and more.</p>
+            </header>
+            <nav class="hub-tabs" aria-label="Arcade sections" role="tablist">
+                <button class="hub-tab" type="button" role="tab" aria-selected="false" data-tab="leaderboard">Leaderboard</button>
+                <button class="hub-tab is-active" type="button" role="tab" aria-selected="true" data-tab="spotlight">Spotlight</button>
+                <button class="hub-tab" type="button" role="tab" aria-selected="false" data-tab="freeplay">Freeplay</button>
+                <button class="hub-tab" type="button" role="tab" aria-selected="false" data-tab="ranked">Ranked</button>
+                <button class="hub-tab" type="button" role="tab" aria-selected="false" data-tab="online">Online</button>
+                <button class="hub-tab" type="button" role="tab" aria-selected="false" data-tab="discover">Discover</button>
+                <button class="hub-tab" type="button" role="tab" aria-selected="false" data-tab="create">Create</button>
+                <button class="hub-tab" type="button" role="tab" aria-selected="false" data-tab="settings">Settings</button>
+                <button class="hub-tab" type="button" role="tab" aria-selected="false" data-tab="moderation">Moderation</button>
+            </nav>
+
+            <section class="hub-panel" role="tabpanel" data-panel="leaderboard" hidden>
+                <div class="hub-section-heading"><div><span class="game-overline">ALL-TIME HIGH SCORES</span><h2>Arcade leaderboard</h2></div><p>Ranked by score, with each run's elapsed time shown.</p></div>
+                <div class="inline-fields">
+                    <label>Game
+                        <select id="arcade-leaderboard-game">
+                            <option value="catch">Star Catcher</option>
+                            <option value="dodge" selected>Meteor Dash</option>
+                            <option value="hop">Planet Hopper</option>
+                            <option value="dash">Sky Dash</option>
+                        </select>
+                    </label>
+                    <span id="arcade-leaderboard-updated" class="season-label">All time</span>
+                </div>
+                <div id="arcade-leaderboard-list" class="leaderboard-list"><p class="hub-empty">Choose a game to see its top scores.</p></div>
+                <p id="arcade-leaderboard-message" class="hub-message" role="status" aria-live="polite"></p>
+                <p class="hub-note">Solo scores are submitted by players and are not server-verified. Bot practice and community-game runs are not included.</p>
+            </section>
+
+            <section class="hub-panel" role="tabpanel" data-panel="spotlight">
+                <div class="hub-section-heading"><div><span class="game-overline">ROTATING CHALLENGES</span><h2>Play today's spotlight</h2></div><p>Challenges rotate on UTC time.</p></div>
+                <div id="schedule-cards" class="spotlight-grid"><p class="hub-empty">Loading the daily, weekly, and event challenges...</p></div>
+                <p id="schedule-message" class="hub-message" role="status" aria-live="polite"></p>
+            </section>
+
+            <section class="hub-panel" role="tabpanel" data-panel="freeplay" hidden>
+                <div class="hub-section-heading"><div><span class="game-overline">PRACTICE YOUR WAY</span><h2>Freeplay</h2></div><p>Just-for-fun rounds. No ranked points.</p></div>
+                <div class="freeplay-grid">
+                    <a class="freeplay-card" href="game.html?game=catch"><span class="freeplay-icon">🚀</span><b>Star Catcher</b><span>Fly around the 3D galaxy and collect stars.</span><em>Play solo →</em></a>
+                    <a class="freeplay-card" href="game.html?game=dodge"><span class="freeplay-icon">☄</span><b>Meteor Dash</b><span>Practice dodging the meteor field.</span><em>Play solo →</em></a>
+                    <a class="freeplay-card" href="game.html?game=hop"><span class="freeplay-icon">🪐</span><b>Planet Hopper</b><span>Practice your jumps between planets.</span><em>Play solo →</em></a>
+                    <a class="freeplay-card bot-card" href="game.html?game=catch&amp;opponent=bot"><span class="freeplay-icon">🤖</span><b>Bot practice</b><span>Race a local computer rival in Star Catcher.</span><em>Play vs. bot →</em></a>
+                </div>
+                <p class="hub-note">The bot is a local practice opponent. It does not submit scores or enter ranked leaderboards.</p>
+            </section>
+
+            <section class="hub-panel" role="tabpanel" data-panel="ranked" hidden>
+                <div class="hub-section-heading"><div><span class="game-overline">SERVER-VALIDATED SCORES</span><h2>Ranked leaderboard</h2></div><p>Ranked points count in verified online Star Catcher matches.</p></div>
+                <div class="inline-fields">
+                    <label>Game <select id="leaderboard-game"><option value="catch">Star Catcher</option></select></label>
+                    <label>Queue <select id="leaderboard-mode"><option value="ranked">Ranked</option></select></label>
+                    <span id="leaderboard-date" class="season-label"></span>
+                </div>
+                <div id="leaderboard-list" class="leaderboard-list"><p class="hub-empty">Choose a board to load today's scores.</p></div>
+                <p id="leaderboard-message" class="hub-message" role="status" aria-live="polite"></p>
+                <div class="hub-section-heading leaderboard-extra-heading"><div><span class="game-overline">ALL-TIME COMMUNITY BOARDS</span><h3>Global standings</h3></div><p>Signed-in players only. Global points are server-validated ranked points.</p></div>
+                <div class="global-leaderboards">
+                    <section aria-labelledby="creator-leaderboard-title">
+                        <h3 id="creator-leaderboard-title">Top level creators</h3>
+                        <div id="creator-leaderboard-list" class="leaderboard-list"><p class="hub-empty">Loading creator standings...</p></div>
+                    </section>
+                    <section aria-labelledby="global-leaderboard-title">
+                        <h3 id="global-leaderboard-title">All-time ranked points</h3>
+                        <div id="global-leaderboard-list" class="leaderboard-list"><p class="hub-empty">Loading global standings...</p></div>
+                    </section>
+                </div>
+                <p id="global-leaderboard-message" class="hub-message" role="status" aria-live="polite"></p>
+            </section>
+
+            <section class="hub-panel" role="tabpanel" data-panel="online" hidden>
+                <div class="hub-section-heading"><div><span class="game-overline">LIVE HEAD-TO-HEAD</span><h2>Play online</h2></div><p>Matchmaking pairs you with another signed-in player. Moves and scores are validated by Firebase.</p></div>
+                <div class="match-setup">
+                    <label>Game <select id="match-game"><option value="catch">Star Catcher</option></select></label>
+                    <label>Queue <select id="match-mode"><option value="casual">Casual</option><option value="ranked">Ranked</option></select></label>
+                    <button id="find-match" class="button button-primary" type="button">Find a match <span aria-hidden="true">→</span></button>
+                </div>
+                <p id="match-message" class="hub-message" role="status" aria-live="polite">Use the arrow keys, WASD, or tap the on-screen directions during a match.</p>
+                <div id="live-match" class="live-match" hidden>
+                    <div class="live-match-heading"><span id="match-status">Waiting for an opponent...</span><button id="leave-match" class="button button-quiet" type="button">Leave match</button></div>
+                    <div class="match-scores"><span>You <b id="my-live-score">0</b></span><span>⭐</span><span>Opponent <b id="opponent-live-score">0</b></span></div>
+                    <div id="match-board" class="match-board" role="grid" aria-label="Live seven by seven star-catching arena"></div>
+                    <div class="arcade-controls" aria-label="Live match controls">
+                        <button class="control-button" type="button" data-online-move="left" aria-label="Move left">←</button>
+                        <div class="control-column"><button class="control-button" type="button" data-online-move="up" aria-label="Move up">↑</button><button class="control-button" type="button" data-online-move="down" aria-label="Move down">↓</button></div>
+                        <button class="control-button" type="button" data-online-move="right" aria-label="Move right">→</button>
+                    </div>
+                </div>
+            </section>
+
+            <section class="hub-panel" role="tabpanel" data-panel="discover" hidden>
+                <div class="hub-section-heading"><div><span class="game-overline">MADE BY PLAYERS</span><h2>Discover community games</h2></div><p>Search by a game's name or paste its share ID.</p></div>
+                <form id="game-search-form" class="search-form"><label class="visually-hidden" for="game-search">Search games or IDs</label><input id="game-search" type="search" placeholder="Search a title or enter a game ID" maxlength="48" required><button class="button button-primary" type="submit">Search</button></form>
+                <p id="search-message" class="hub-message" role="status" aria-live="polite"></p>
+                <div id="community-games" class="community-games"></div>
+                <section id="game-comments" class="game-comments" hidden>
+                    <div class="hub-section-heading"><div><span class="game-overline">COMMUNITY CHAT</span><h3 id="comments-title">Comments</h3></div></div>
+                    <form id="comment-form" class="comment-form"><label class="visually-hidden" for="comment-text">Write a comment</label><textarea id="comment-text" maxlength="300" rows="3" placeholder="Share a kind, constructive thought..." required></textarea><div class="comment-submit-row"><span id="comment-count">0 / 300</span><button class="button button-primary" type="submit">Post comment</button></div></form>
+                    <p id="comment-message" class="hub-message" role="status" aria-live="polite"></p>
+                    <div id="comments-list" class="comments-list"></div>
+                </section>
+            </section>
+
+            <section class="hub-panel" role="tabpanel" data-panel="create" hidden>
+                <div class="hub-section-heading"><div><span class="game-overline">YOUR IDEA, YOUR LEVEL</span><h2>Build a custom arcade level</h2></div><p>Create a level with a name, a numeric ID, and a Geometry Dash-inspired obstacle pattern. Sky Dash spikes appear across different lanes, including the middle; steer or jump to dodge. No uploaded code.</p></div>
+                <form id="create-game-form" class="creator-form">
+                    <label>Level name<input name="levelName" type="text" maxlength="48" placeholder="e.g. Neon Drift" required></label>
+                    <label>Level ID<input name="levelId" type="text" inputmode="numeric" pattern="[0-9]+" maxlength="12" placeholder="e.g. 4201" required></label>
+                    <label>Description<textarea name="description" maxlength="240" rows="3" placeholder="What makes your level special?" required></textarea></label>
+                    <div class="inline-fields">
+                        <label>Template<select name="gameType"><option value="catch">Star Catcher</option><option value="dodge">Meteor Dash</option><option value="hop">Planet Hopper</option><option value="dash" selected>Sky Dash Runner</option></select></label>
+                        <label>Difficulty<select name="difficulty"><option value="easy">Easy</option><option value="normal" selected>Normal</option><option value="hard">Hard</option></select></label>
+                        <label>Accent color<input name="accent" type="color" value="#a78bfa"></label>
+                    </div>
+
+                    <div class="level-builder">
+                        <div class="level-builder-header">
+                            <strong>GD-style editor</strong>
+                            <div class="level-builder-tools">
+                                <button type="button" class="button button-quiet" id="level-clear">Clear</button>
+                                <button type="button" class="button button-primary" id="level-fill-spikes">Fill spikes</button>
+                            </div>
+                        </div>
+                        <div id="level-grid" class="level-grid" aria-label="Level obstacle editor">
+                            <button type="button" class="level-cell is-empty" data-state="empty" aria-label="Step 1 empty"></button>
+                            <button type="button" class="level-cell is-empty" data-state="empty" aria-label="Step 2 empty"></button>
+                            <button type="button" class="level-cell is-empty" data-state="empty" aria-label="Step 3 empty"></button>
+                            <button type="button" class="level-cell is-empty" data-state="empty" aria-label="Step 4 empty"></button>
+                            <button type="button" class="level-cell is-empty" data-state="empty" aria-label="Step 5 empty"></button>
+                            <button type="button" class="level-cell is-empty" data-state="empty" aria-label="Step 6 empty"></button>
+                            <button type="button" class="level-cell is-empty" data-state="empty" aria-label="Step 7 empty"></button>
+                            <button type="button" class="level-cell is-empty" data-state="empty" aria-label="Step 8 empty"></button>
+                            <button type="button" class="level-cell is-empty" data-state="empty" aria-label="Step 9 empty"></button>
+                            <button type="button" class="level-cell is-empty" data-state="empty" aria-label="Step 10 empty"></button>
+                            <button type="button" class="level-cell is-empty" data-state="empty" aria-label="Step 11 empty"></button>
+                            <button type="button" class="level-cell is-empty" data-state="empty" aria-label="Step 12 empty"></button>
+                        </div>
+                        <p class="hub-note">Tap each beat to toggle obstacle blocks. Empty = safe gap, spike = obstacle to jump over.</p>
+                    </div>
+
+                    <button class="button button-primary" type="submit">Publish level <span aria-hidden="true">→</span></button>
+                </form>
+                <p id="create-message" class="hub-message" role="status" aria-live="polite"></p>
+                <p class="hub-note">Published levels appear in Discover with their own numeric ID and name. You can report games or comments that break the community rules.</p>
+            </section>
+
+            <section class="hub-panel" role="tabpanel" data-panel="moderation" hidden>
+                <div class="hub-section-heading"><div><span class="game-overline">COMMUNITY SAFETY</span><h2>Moderation queue</h2></div><p>Only accounts granted moderator access by the project owner can review reports.</p></div>
+                <button id="load-reports" class="button button-quiet" type="button">Load open reports</button>
+                <p id="moderation-message" class="hub-message" role="status" aria-live="polite">Moderator permissions are checked securely on the server.</p>
+                <div id="moderation-reports" class="moderation-reports"></div>
+            </section>
+
+            <section class="hub-panel" role="tabpanel" data-panel="settings" hidden>
+                <div class="hub-section-heading"><div><span class="game-overline">YOUR ACCOUNT</span><h2>Settings</h2></div><p>Manage your Starbound Arcade account.</p></div>
+                <section class="settings-card" aria-labelledby="account-settings-title">
+                    <div><span class="game-overline">SIGNED IN AS</span><h3 id="account-settings-title">Your account</h3><p id="settings-player-name" class="hub-note">Loading account...</p></div>
+                    <button id="community-sign-out" class="button button-quiet" type="button">Sign out</button>
+                </section>
+                <section class="settings-card settings-danger" aria-labelledby="delete-account-title">
+                    <div><span class="game-overline">DANGER ZONE</span><h3 id="delete-account-title">Delete account</h3><p class="hub-note">Permanently delete your account, created levels, comments, and leaderboard records. This cannot be undone.</p></div>
+                    <button id="open-delete-account" class="button button-danger" type="button">Delete my account</button>
+                </section>
+                <p id="settings-message" class="hub-message" role="status" aria-live="polite"></p>
+            </section>
+        </section>
+        <dialog id="delete-account-dialog" class="account-dialog" aria-labelledby="delete-dialog-title">
+            <form id="delete-account-form">
+                <span class="game-overline">ACCOUNT DELETION</span>
+                <h2 id="delete-dialog-title">Are you absolutely sure?</h2>
+                <p>This permanently deletes your account and its arcade data. Confirm your password to continue.</p>
+                <label for="delete-confirmation">Type DELETE to confirm</label>
+                <input id="delete-confirmation" name="confirmation" type="text" autocomplete="off" required>
+                <label for="delete-password">Account password</label>
+                <input id="delete-password" name="password" type="password" autocomplete="current-password" required>
+                <p id="delete-dialog-message" class="hub-message" role="status" aria-live="polite"></p>
+                <div class="account-dialog-actions">
+                    <button id="cancel-delete-account" class="button button-quiet" type="button">Cancel</button>
+                    <button id="confirm-delete-account" class="button button-danger" type="submit">Permanently delete</button>
+                </div>
+            </form>
+        </dialog>
+        <footer class="site-footer"><span>✦</span> PLAY FAIR · BE KIND · KEEP REACHING FOR THE STARS · &copy; 2026 STARBOUND DEVELOPING INC · <a href="https://discord.com/channels/1564610896939057192/1564610897706623078" target="_blank" rel="noopener noreferrer">Join our Discord</a> · <a href="LICENSE.md">LICENSE</a></footer>
+    </main>
+    <script>
+        window.__starboundAuthResolved = false;
+        window.setTimeout(() => {
+            if (window.__starboundAuthResolved) return;
+            const status = document.getElementById("community-loading");
+            if (!status || status.hidden) return;
+            status.textContent = "Sign-in check is taking too long. Check your connection and, on localhost, make sure the Firebase emulators are running. ";
+            const link = document.createElement("a");
+            link.href = "index.html";
+            link.textContent = "Return to sign in";
+            status.append(link);
+        }, 12000);
+    </script>
+    <script type="module" src="fullscreen.js"></script>
+    <script type="module" src="community.js?v=20261027"></script>
+</body>
+</html>

@@ -1,0 +1,15 @@
+name = "starbound-arcade-api"
+main = "worker.js"
+compatibility_date = "2026-10-24"
+
+[vars]
+PROJECT_ID = "sign-up-login-82aee"
+FIREBASE_API_KEY = "AIzaSyDy7WeNe3xmQTMlt6obzeJoTowpyWn8OMk"
+
+[[routes]]
+pattern = "www.starboundarcade.com/api/*"
+zone_name = "starboundarcade.com"
+
+[[routes]]
+pattern = "starboundarcade.com/api/*"
+zone_name = "starboundarcade.com"

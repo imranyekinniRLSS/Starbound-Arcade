@@ -1,0 +1,52 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function activeUser() {
+      return signedIn()
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.status == "active";
+    }
+
+    match /users/{userId} {
+      allow read: if signedIn() && request.auth.uid == userId;
+      allow write: if false;
+    }
+
+    match /publicPlayerIds/{publicId} {
+      allow read, write: if false;
+    }
+
+    match /games/{gameId} {
+      allow get, list: if signedIn()
+        && (resource.data.status == "published" || resource.data.ownerId == request.auth.uid);
+      allow write: if false;
+    }
+
+    match /games/{gameId}/comments/{commentId} {
+      allow get, list: if signedIn() && resource.data.status == "visible";
+      allow write: if false;
+    }
+
+    match /matches/{matchId} {
+      allow get: if signedIn() && request.auth.uid in resource.data.playerIds;
+      allow list, write: if false;
+    }
+
+    match /leaderboards/{boardId}/scores/{userId} {
+      allow read: if signedIn();
+      allow write: if false;
+    }
+
+    match /reports/{reportId} {
+      allow read, write: if false;
+    }
+
+    match /matchmaking/{queueId} {
+      allow get: if signedIn() && resource.data.playerId == request.auth.uid;
+      allow list, write: if false;
+    }
+  }
+}

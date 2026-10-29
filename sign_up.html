@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#11102c">
+    <title>Sign Up | Starbound Arcade</title>
+    <link rel="stylesheet" href="styles.css?v=20261025">
+</head>
+<body>
+    <main class="page-shell">
+        <header class="auth-topbar">
+            <a class="brand" href="sign_in.html" aria-label="Starbound Arcade home">
+                <span class="brand-mark" aria-hidden="true">✦</span>
+                <span>STARBOUND <span class="brand-light">ARCADE</span></span>
+            </a>
+            <button class="fullscreen-button" type="button" data-fullscreen-target="website">Fullscreen website</button>
+        </header>
+        <aside class="beta-notice" aria-label="Beta notice">
+            <strong>BETA</strong>
+            <span>Starbound Arcade is still being tested. Some features may be incomplete or temporarily unavailable.</span>
+        </aside>
+
+        <section class="auth-layout">
+            <div class="hero-copy">
+                <span class="eyebrow"><span class="eyebrow-dot"></span> YOUR NEXT HIGH SCORE STARTS HERE</span>
+                <h1>A little space<br>for <span>a lot of fun.</span></h1>
+                <p>Make your player account and explore three tiny 3D arcade adventures.</p>
+                <div class="hero-stats" aria-label="Game features">
+                    <span>✦ &nbsp;Free to play</span>
+                    <span>⌁ &nbsp;Your score, your record</span>
+                </div>
+            </div>
+
+            <div class="auth-card">
+                <div id="auth-loading" class="loading-state" role="status">Checking your session<span class="loading-dots">...</span></div>
+                <div id="signed-out-panel" hidden>
+                    <div class="card-icon" aria-hidden="true">✧</div>
+                    <p class="card-kicker">JOIN THE ARCADE</p>
+                    <h2>Let's get you playing</h2>
+                    <p class="card-description">Create an account to save your place among the stars.</p>
+                    <form id="sign-up-form">
+                        <label for="username">Player name</label>
+                        <input type="text" id="username" name="username" placeholder="What should we call you?" autocomplete="username" required>
+                        <label for="email">Email address</label>
+                        <input type="email" id="email" name="email" placeholder="you@example.com" autocomplete="email" required>
+                        <label for="password">Password</label>
+                        <input type="password" id="password" name="password" placeholder="At least 6 characters" autocomplete="new-password" minlength="6" required>
+                        <button class="button button-primary button-full" type="submit">Create account <span aria-hidden="true">→</span></button>
+                    </form>
+                    <p id="auth-message" class="form-message" role="status" aria-live="polite"></p>
+                    <p class="card-footer">Already have an account? <a href="index.html">Sign in</a></p>
+                </div>
+                <div id="signed-in-panel" hidden>
+                    <div class="card-icon" aria-hidden="true">✦</div>
+                    <p class="card-kicker">YOU'RE IN</p>
+                    <h2>Welcome, <span id="display-name">player</span>!</h2>
+                    <p class="card-description">Three tiny worlds are waiting. Choose your next adventure in the arcade.</p>
+                    <p id="player-link-message" class="form-message" role="status" aria-live="polite"></p>
+                    <a class="button button-primary button-full play-link" href="community.html">Open the arcade hub <span aria-hidden="true">→</span></a>
+                    <a class="button button-quiet button-full" href="game.html">Play the 3D games</a>
+                    <button id="sign-out" class="button button-quiet button-full" type="button">Sign out</button>
+                </div>
+            </div>
+        </section>
+
+        <footer class="site-footer"><span>✦</span> MADE FOR YOUR NEXT LITTLE ADVENTURE · &copy; 2026 STARBOUND DEVELOPING INC · <a href="https://discord.com/channels/1564610896939057192/1564610897706623078" target="_blank" rel="noopener noreferrer">Join our Discord</a> · <a href="LICENSE.md">LICENSE</a></footer>
+    </main>
+    <script type="module" src="fullscreen.js"></script>
+    <script type="module">
+        import { createUserWithEmailAndPassword, onAuthStateChanged, signOut, updateProfile } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js";
+        import { auth } from "./firebase.js";
+        import { syncPlayerLink } from "./player-links.js";
+
+        const loadingPanel = document.getElementById("auth-loading");
+        const signedOutPanel = document.getElementById("signed-out-panel");
+        const signedInPanel = document.getElementById("signed-in-panel");
+        const signUpForm = document.getElementById("sign-up-form");
+        const message = document.getElementById("auth-message");
+        const signOutButton = document.getElementById("sign-out");
+
+        onAuthStateChanged(auth, (user) => {
+            loadingPanel.hidden = true;
+            signedOutPanel.hidden = Boolean(user);
+            signedInPanel.hidden = !user;
+            if (user) {
+                document.getElementById("display-name").textContent = user.displayName || user.email || "player";
+                syncPlayerLink(user, user.displayName || user.email?.split("@")[0] || "Player")
+                    .then(() => { document.getElementById("player-link-message").textContent = ""; })
+                    .catch((error) => {
+                        const status = document.getElementById("player-link-message");
+                        status.textContent = `Could not create your player link: ${error.message}`;
+                        status.classList.add("is-error");
+                    });
+            }
+        }, (error) => {
+            loadingPanel.textContent = `Could not check sign-in status: ${error.message}`;
+        });
+
+        signUpForm.addEventListener("submit", async (event) => {
+            event.preventDefault();
+            message.textContent = "";
+            message.classList.remove("is-error");
+
+            const username = signUpForm.elements.username.value.trim();
+            try {
+                const { user } = await createUserWithEmailAndPassword(
+                    auth,
+                    signUpForm.elements.email.value.trim(),
+                    signUpForm.elements.password.value
+                );
+                await updateProfile(user, { displayName: username });
+                signUpForm.reset();
+                message.classList.remove("is-error");
+            } catch (error) {
+                message.textContent = `Could not create account: ${error.message}`;
+                message.classList.add("is-error");
+            }
+        });
+
+        signOutButton.addEventListener("click", async () => {
+            message.classList.remove("is-error");
+            try {
+                await signOut(auth);
+            } catch (error) {
+                message.textContent = `Could not sign out: ${error.message}`;
+                message.classList.add("is-error");
+            }
+        });
+    </script>
+</body>
+</html>

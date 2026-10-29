@@ -1,0 +1,1225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#11102c">
+    <title>Arcade | Starbound Arcade</title>
+    <link rel="stylesheet" href="styles.css?v=20261025">
+</head>
+<body>
+    <main class="page-shell game-shell arcade-shell">
+        <header class="game-topbar">
+            <a class="brand" href="index.html" aria-label="Starbound Arcade home">
+                <span class="brand-mark" aria-hidden="true">✦</span>
+                <span>STARBOUND <span class="brand-light">ARCADE</span></span>
+            </a>
+            <div class="game-topbar-actions">
+                <a class="back-link" href="community.html">← Arcade hub</a>
+                <button class="fullscreen-button" type="button" data-fullscreen-target="website">Fullscreen website</button>
+            </div>
+        </header>
+        <aside class="beta-notice" aria-label="Beta notice">
+            <strong>BETA</strong>
+            <span>Starbound Arcade is still being tested. Some features may be incomplete or temporarily unavailable.</span>
+        </aside>
+
+        <section id="auth-check" class="arcade-auth-check" role="status">Checking your player session<span class="loading-dots">...</span></section>
+        <section id="arcade" hidden>
+            <header class="arcade-heading">
+                <span class="game-overline">WELCOME TO THE ARCADE</span>
+                <h1>Pick your <span>adventure.</span></h1>
+                <p>one big world, one big high-score energy. Choose a game and jump in.</p>
+            </header>
+
+            <section id="game-picker" class="game-picker" aria-label="Choose a game">
+                <button class="game-tile tile-catch" type="button" data-game="catch">
+                    <span class="tile-art" aria-hidden="true"><span>🚀</span><span>✦</span><span>✧</span></span>
+                    <span class="tile-number">01 / COLLECT</span>
+                    <span class="tile-title">Star Catcher</span>
+                    <span class="tile-description">Gather stars, then grab a boost to double your points for a few seconds.</span>
+                    <span class="tile-cta">Play game <span aria-hidden="true">→</span></span>
+                </button>
+                <button class="game-tile tile-dodge" type="button" data-game="dodge">
+                    <span class="tile-art" aria-hidden="true"><span>☄</span><span>🚀</span><span>☄</span></span>
+                    <span class="tile-number">02 / SURVIVE</span>
+                    <span class="tile-title">Meteor Dash</span>
+                    <span class="tile-description">Dodge fast, standard, and heavy meteors. Find a shield and survive.</span>
+                    <span class="tile-cta">Play game <span aria-hidden="true">→</span></span>
+                </button>
+                <button class="game-tile tile-hop" type="button" data-game="hop">
+                    <span class="tile-art" aria-hidden="true"><span>🪐</span><span>✨</span><span>🪐</span></span>
+                    <span class="tile-number">03 / JUMP</span>
+                    <span class="tile-title">Planet Hopper</span>
+                    <span class="tile-description">Leap between tiny planets and keep your space boots out of the void.</span>
+                    <span class="tile-cta">Play game <span aria-hidden="true">→</span></span>
+                </button>
+            </section>
+
+            <section id="game-stage" class="game-stage" hidden aria-label="3D game">
+                <div class="stage-top">
+                    <button id="back-to-games" class="stage-back" type="button">← All games</button>
+                    <div class="stage-title"><span id="active-game-name">Star Catcher</span><span class="stage-divider">·</span><span id="active-game-instruction">Collect the stars</span></div>
+                    <label class="stage-difficulty" for="difficulty">DIFFICULTY
+                        <select id="difficulty" aria-label="Game difficulty">
+                            <option value="easy">Easy</option>
+                            <option value="normal" selected>Normal</option>
+                            <option value="hard">Hard</option>
+                        </select>
+                    </label>
+                    <label class="stage-time-control" for="game-time-mode">TIME MODE
+                        <select id="game-time-mode" aria-label="Game time mode">
+                            <option value="default">Default (30 sec)</option>
+                            <option value="custom">Set time</option>
+                            <option value="endless">Endless</option>
+                        </select>
+                    </label>
+                    <label id="custom-time-control" class="stage-time-control" for="custom-game-time" hidden>SECONDS
+                        <input id="custom-game-time" type="number" min="1" max="999999999999999" step="1" value="60" inputmode="numeric">
+                    </label>
+                    <div class="stage-stats">
+                        <span>SCORE <b id="score">0</b></span>
+                        <span><span id="time-label">TIME</span> <b id="time">30</b></span>
+                        <span>BEST <b id="best">0</b></span>
+                        <span id="powerup-status" hidden></span>
+                        <span id="bot-score-display" hidden>BOT <b id="bot-score">0</b></span>
+                    </div>
+                    <button id="pause-game" class="stage-action" type="button" hidden>Pause</button>
+                    <button id="toggle-sound" class="stage-action" type="button" aria-pressed="true">Sound: on</button>
+                    <button class="stage-action" type="button" data-fullscreen-target="game">Fullscreen game</button>
+                </div>
+                <div id="three-container" class="three-container" aria-label="Three-dimensional game area"></div>
+                <div id="stage-overlay" class="stage-overlay">
+                    <div class="stage-overlay-card">
+                        <span class="overlay-sparkle" aria-hidden="true">✦</span>
+                        <h2 id="overlay-title">Ready for liftoff?</h2>
+                        <p id="overlay-description">Use the arrow keys or WASD to steer. On mobile, use the controls below.</p>
+                        <button id="start-game" class="button button-primary" type="button">Start game <span aria-hidden="true">→</span></button>
+                    </div>
+                </div>
+                <div class="arcade-controls" aria-label="Game controls">
+                    <button class="control-button" type="button" data-move="left" aria-label="Move left">←</button>
+                    <div class="control-column">
+                        <button class="control-button" type="button" data-move="up" aria-label="Move up or jump">↑</button>
+                        <button class="control-button" type="button" data-move="down" aria-label="Move down">↓</button>
+                    </div>
+                    <button class="control-button" type="button" data-move="right" aria-label="Move right">→</button>
+                    <button class="control-button jump-control" type="button" data-move="jump" aria-label="Jump">⤒</button>
+                </div>
+                <p id="game-message" class="game-message" role="status" aria-live="polite"></p>
+            </section>
+        </section>
+        <footer class="site-footer"><span>✦</span> BUILT FOR YOUR NEXT LITTLE ADVENTURE · &copy; 2026 STARBOUND DEVELOPING INC · <a href="https://discord.com/channels/1564610896939057192/1564610897706623078" target="_blank" rel="noopener noreferrer">Join our Discord</a> · <a href="LICENSE.md">LICENSE</a></footer>
+    </main>
+
+    <script type="module" src="fullscreen.js"></script>
+    <script type="module">
+        import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js";
+        import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js";
+        import { doc, getDoc } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
+        import { httpsCallable } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-functions.js";
+        import { auth, db, functions } from "./firebase.js";
+        import { syncPlayerLink } from "./player-links.js";
+
+        const authCheck = document.getElementById("auth-check");
+        const arcade = document.getElementById("arcade");
+        const picker = document.getElementById("game-picker");
+        const stage = document.getElementById("game-stage");
+        const container = document.getElementById("three-container");
+        const overlay = document.getElementById("stage-overlay");
+        const overlayTitle = document.getElementById("overlay-title");
+        const overlayDescription = document.getElementById("overlay-description");
+        const startButton = document.getElementById("start-game");
+        const scoreLabel = document.getElementById("score");
+        const timeLabel = document.getElementById("time");
+        const bestLabel = document.getElementById("best");
+        const difficultySelect = document.getElementById("difficulty");
+        const timeModeSelect = document.getElementById("game-time-mode");
+        const customTimeControl = document.getElementById("custom-time-control");
+        const customTimeInput = document.getElementById("custom-game-time");
+        const pauseButton = document.getElementById("pause-game");
+        const soundButton = document.getElementById("toggle-sound");
+        const powerupStatus = document.getElementById("powerup-status");
+        const timeLabelText = document.getElementById("time-label");
+        const message = document.getElementById("game-message");
+        const gameNames = {
+            catch: { title: "Star Catcher", instruction: "Collect the stars", description: "Steer your ship through the galaxy and collect the glowing stars." },
+            dodge: { title: "Meteor Dash", instruction: "←/→ dodge · ↑/↓ change lanes", description: "Use left/right to dodge and up/down to change lanes. Avoid fast, standard, and heavy meteors, and collect shields." },
+            hop: { title: "Planet Hopper", instruction: "Jump between planets", description: "Use ↑, W, or the jump button to leap. Stay on the platforms and rack up jumps!" },
+            dash: { title: "Sky Dash", instruction: "←/→ move · ↑/space jump", description: "Use left/right to dodge obstacles and up or space to jump over them. Keep moving and build your score!" }
+        };
+        const clock = new THREE.Clock();
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x11102c);
+        scene.fog = new THREE.Fog(0x11102c, 17, 46);
+        const camera = new THREE.PerspectiveCamera(52, 1, 0.1, 100);
+        camera.position.set(0, 8, 13);
+        camera.lookAt(0, 0, -3);
+
+        let renderer;
+        let resizeObserver;
+        let activeGame = "catch";
+        let authenticated = false;
+        let isPlaying = false;
+        let isPaused = false;
+        let elapsed = 0;
+        let runDuration = 30;
+        let score = 0;
+        let spawnElapsed = 0;
+        let powerupElapsed = 0;
+        let shieldUntil = 0;
+        let scoreMultiplierUntil = 0;
+        let soundEnabled = localStorage.getItem("starbound-sound") !== "off";
+        let audioContext;
+        let player;
+        let botPlayer;
+        let botScore = 0;
+        let botMoveElapsed = 0;
+        let botEnabled = false;
+        let customMode = null;
+        let customAccent = null;
+        let floor;
+        let activeObjects = [];
+        let planets = [];
+        let hopVelocity = 0;
+        let hopHeight = 0;
+        let dashPatternIndex = 0;
+        let dashJumpVelocity = 0;
+        let dashJumpHeight = 0;
+        let jumpCount = 0;
+        let dashObstacleCount = 0;
+        let lastDashObstacleLane = null;
+        let disposed = false;
+
+        function getDifficulty() {
+            return difficultySelect.value;
+        }
+
+        function getDifficultyMultiplier() {
+            return getDifficulty() === "hard" ? 1.3 : getDifficulty() === "easy" ? 0.8 : 1;
+        }
+
+        function getTimeMode() {
+            return timeModeSelect.value;
+        }
+
+        function getSelectedDuration() {
+            if (getTimeMode() === "default") return 30;
+            if (getTimeMode() === "endless") return Infinity;
+            const duration = Number(customTimeInput.value);
+            if (!Number.isSafeInteger(duration) || duration < 1 || duration > 999999999999999) {
+                throw new Error("Choose a whole-number duration from 1 to 999999999999999 seconds.");
+            }
+            return duration;
+        }
+
+        function updateTimeControls() {
+            customTimeControl.hidden = getTimeMode() !== "custom";
+            timeLabelText.textContent = getTimeMode() === "endless" ? "ELAPSED" : "TIME";
+            if (!isPlaying && !isPaused) {
+                timeLabel.textContent = getTimeMode() === "endless"
+                    ? "0"
+                    : getTimeMode() === "custom"
+                        ? customTimeInput.value || "—"
+                        : "30";
+            }
+        }
+
+        function setTimeControlsDisabled(disabled) {
+            timeModeSelect.disabled = disabled;
+            customTimeInput.disabled = disabled || getTimeMode() !== "custom";
+        }
+
+        function playSound(frequency, duration = 0.12) {
+            if (!soundEnabled) return;
+            const AudioContextClass = window.AudioContext;
+            if (!AudioContextClass) {
+                message.textContent = "Sound is unavailable in this browser.";
+                soundEnabled = false;
+                updateSoundButton();
+                return;
+            }
+            try {
+                audioContext ||= new AudioContextClass();
+            } catch (error) {
+                message.textContent = `Could not start game audio: ${error.message}`;
+                soundEnabled = false;
+                updateSoundButton();
+                return;
+            }
+            if (audioContext.state === "suspended") {
+                audioContext.resume().catch((error) => {
+                    message.textContent = `Could not enable game audio: ${error.message}`;
+                });
+            }
+            const oscillator = audioContext.createOscillator();
+            const gain = audioContext.createGain();
+            oscillator.frequency.value = frequency;
+            gain.gain.setValueAtTime(0.08, audioContext.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + duration);
+            oscillator.connect(gain);
+            gain.connect(audioContext.destination);
+            oscillator.start();
+            oscillator.stop(audioContext.currentTime + duration);
+        }
+
+        function updateSoundButton() {
+            soundButton.textContent = `Sound: ${soundEnabled ? "on" : "off"}`;
+            soundButton.setAttribute("aria-pressed", String(soundEnabled));
+        }
+
+        function updatePowerupStatus() {
+            if (scoreMultiplierUntil > elapsed) {
+                powerupStatus.hidden = false;
+                powerupStatus.innerHTML = `STAR BOOST <b>x2 · ${Math.ceil(scoreMultiplierUntil - elapsed)}s</b>`;
+            } else if (shieldUntil > elapsed) {
+                powerupStatus.hidden = false;
+                powerupStatus.innerHTML = `SHIELD <b>${Math.ceil(shieldUntil - elapsed)}s</b>`;
+            } else {
+                powerupStatus.hidden = true;
+                powerupStatus.textContent = "";
+            }
+        }
+
+        function initializeRenderer() {
+            if (renderer) return;
+            try {
+                renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+            } catch (error) {
+                message.textContent = `3D graphics could not start: ${error.message}`;
+                throw error;
+            }
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+            renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+            renderer.outputColorSpace = THREE.SRGBColorSpace;
+            renderer.domElement.setAttribute("aria-hidden", "true");
+            container.prepend(renderer.domElement);
+            scene.add(new THREE.HemisphereLight(0xc3b8ff, 0x292346, 2.1));
+            const keyLight = new THREE.DirectionalLight(0xffffff, 3);
+            keyLight.position.set(-4, 10, 7);
+            keyLight.castShadow = true;
+            scene.add(keyLight);
+            addStars();
+            resizeObserver = new ResizeObserver(resizeRenderer);
+            resizeObserver.observe(container);
+            resizeRenderer();
+            renderer.setAnimationLoop(animate);
+        }
+
+        function addStars() {
+            const positions = [];
+            for (let index = 0; index < 260; index += 1) {
+                positions.push((Math.random() - 0.5) * 44, Math.random() * 19 + 1, (Math.random() - 0.5) * 52 - 5);
+            }
+            const geometry = new THREE.BufferGeometry();
+            geometry.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
+            const stars = new THREE.Points(geometry, new THREE.PointsMaterial({ color: 0xd9d0ff, size: 0.085, transparent: true, opacity: 0.82 }));
+            scene.add(stars);
+        }
+
+        function resizeRenderer() {
+            if (!renderer || !container.clientWidth || !container.clientHeight) return;
+            const width = container.clientWidth;
+            const height = container.clientHeight;
+            renderer.setSize(width, height, false);
+            camera.aspect = width / height;
+            camera.updateProjectionMatrix();
+        }
+
+        function clearWorld() {
+            for (const object of activeObjects) {
+                scene.remove(object);
+                object.traverse((child) => {
+                    child.geometry?.dispose();
+                    if (Array.isArray(child.material)) child.material.forEach((material) => material.dispose());
+                    else child.material?.dispose();
+                });
+            }
+            activeObjects = [];
+            planets = [];
+            if (player) {
+                scene.remove(player);
+                player.traverse((child) => {
+                    child.geometry?.dispose();
+                    if (Array.isArray(child.material)) child.material.forEach((material) => material.dispose());
+                    else child.material?.dispose();
+                });
+                player = null;
+            }
+            if (botPlayer) {
+                scene.remove(botPlayer);
+                botPlayer = null;
+            }
+            if (floor) {
+                scene.remove(floor);
+                floor.geometry.dispose();
+                floor.material.dispose();
+                floor = null;
+            }
+        }
+
+        function addFloor() {
+            floor = new THREE.Mesh(
+                new THREE.PlaneGeometry(26, 50),
+                new THREE.MeshStandardMaterial({ color: 0x211d42, roughness: 0.82, metalness: 0.08 })
+            );
+            floor.rotation.x = -Math.PI / 2;
+            floor.position.set(0, -0.6, -5);
+            floor.receiveShadow = true;
+            scene.add(floor);
+            const grid = new THREE.GridHelper(26, 26, 0x785bb5, 0x3b315f);
+            grid.position.set(0, -0.58, -5);
+            scene.add(grid);
+            activeObjects.push(grid);
+        }
+
+        function createPlayer() {
+            const ship = new THREE.Group();
+            const body = new THREE.Mesh(
+                new THREE.ConeGeometry(0.48, 1.25, 5),
+                new THREE.MeshStandardMaterial({
+                    color: customAccent || 0xd8ccff,
+                    emissive: 0x302054,
+                    metalness: 0.48,
+                    roughness: 0.27
+                })
+            );
+            body.rotation.x = -Math.PI / 2;
+            body.castShadow = true;
+            ship.add(body);
+            const cockpit = new THREE.Mesh(
+                new THREE.SphereGeometry(0.25, 16, 12),
+                new THREE.MeshStandardMaterial({ color: 0x70e9ff, emissive: 0x157fa8, emissiveIntensity: 1.2, metalness: 0.2, roughness: 0.2 })
+            );
+            cockpit.position.set(0, 0.22, -0.04);
+            ship.add(cockpit);
+            const flame = new THREE.Mesh(
+                new THREE.ConeGeometry(0.19, 0.58, 8),
+                new THREE.MeshBasicMaterial({ color: 0xff9d5c })
+            );
+            flame.rotation.x = Math.PI / 2;
+            flame.position.z = 0.75;
+            flame.name = "engine-flame";
+            ship.add(flame);
+            ship.position.set(0, 0.08, 2.4);
+            scene.add(ship);
+            player = ship;
+        }
+
+        function makeOrb(color, size, emissive = color) {
+            const mesh = new THREE.Mesh(
+                new THREE.IcosahedronGeometry(size, 1),
+                new THREE.MeshStandardMaterial({ color, emissive, emissiveIntensity: 0.9, metalness: 0.25, roughness: 0.32 })
+            );
+            mesh.castShadow = true;
+            return mesh;
+        }
+
+        function setupWorld() {
+            clearWorld();
+            addFloor();
+            createPlayer();
+            camera.position.set(0, 8, 13);
+            camera.lookAt(0, 0, -3);
+            if (activeGame === "catch") {
+                for (let index = 0; index < 10; index += 1) spawnCollectible();
+            } else if (activeGame === "dodge") {
+                player.position.y = 1.4;
+            } else if (activeGame === "hop") {
+                createPlanets();
+            } else if (activeGame === "dash") {
+                player.position.set(0, 0.2, 2.8);
+                dashPatternIndex = 0;
+                dashObstacleCount = 0;
+                lastDashObstacleLane = null;
+                dashJumpVelocity = 0;
+                dashJumpHeight = 0;
+                spawnElapsed = 0;
+                addDashBarrier();
+            }
+            renderer.render(scene, camera);
+        }
+
+        function spawnCollectible() {
+            const collectible = makeOrb(0xffd66e, 0.31, 0xffa920);
+            collectible.position.set((Math.random() - 0.5) * 12, 0.35 + Math.random() * 0.55, -Math.random() * 10 + 3);
+            collectible.userData.baseY = collectible.position.y;
+            scene.add(collectible);
+            activeObjects.push(collectible);
+        }
+
+        function spawnPowerup() {
+            const powerup = new THREE.Group();
+            const crystal = new THREE.Mesh(
+                new THREE.OctahedronGeometry(0.52, 0),
+                new THREE.MeshStandardMaterial({
+                    color: 0x8cfff4,
+                    emissive: 0x17bfff,
+                    emissiveIntensity: 2,
+                    metalness: 0.25,
+                    roughness: 0.2
+                })
+            );
+            crystal.castShadow = true;
+            powerup.add(crystal);
+            const halo = new THREE.Mesh(
+                new THREE.TorusGeometry(0.78, 0.075, 8, 32),
+                new THREE.MeshBasicMaterial({ color: 0x8cfff4 })
+            );
+            halo.rotation.x = Math.PI / 2;
+            powerup.add(halo);
+
+            let x = player.position.x;
+            let z = player.position.z;
+            if (activeGame === "catch") {
+                x = THREE.MathUtils.clamp(player.position.x + 2.4, -6, 6);
+                z = THREE.MathUtils.clamp(player.position.z - 2, -8, 4.2);
+            } else if (activeGame === "dodge") {
+                x = 0;
+                z = -2.8;
+            } else if (activeGame === "hop") {
+                x = THREE.MathUtils.clamp(player.position.x + 0.8, -2.5, 2.5);
+                z = -8;
+            } else if (activeGame === "dash") {
+                z = -6;
+            }
+            powerup.position.set(x, activeGame === "dodge" ? 1.4 : 0.55, z);
+            powerup.userData.kind = "powerup";
+            powerup.userData.baseY = powerup.position.y;
+            powerup.userData.floatOffset = Math.random() * Math.PI * 2;
+            powerup.userData.speed = activeGame === "dodge" ? 2.8 : activeGame === "hop" ? 3.3 : 4.8;
+            powerup.userData.expiresAt = elapsed + 15;
+            scene.add(powerup);
+            activeObjects.push(powerup);
+        }
+
+        function removePowerup(powerup, index) {
+            scene.remove(powerup);
+            powerup.traverse((child) => {
+                child.geometry?.dispose();
+                if (Array.isArray(child.material)) child.material.forEach((material) => material.dispose());
+                else child.material?.dispose();
+            });
+            activeObjects.splice(index, 1);
+        }
+
+        function createMeteor() {
+            const typeRoll = Math.random();
+            const type = typeRoll < 0.22 ? "fast" : typeRoll > 0.82 ? "heavy" : "standard";
+            const size = type === "fast" ? 0.34 : type === "heavy" ? 0.72 : 0.48 + Math.random() * 0.3;
+            const color = type === "fast" ? 0x70e9ff : type === "heavy" ? 0xff8d7a : 0xb3a0e5;
+            const meteor = makeOrb(color, size, type === "fast" ? 0x157fa8 : type === "heavy" ? 0x8f2e4a : 0x6144a1);
+            const lanes = [-5.2, -2.6, 2.6, 5.2];
+            meteor.position.set(lanes[Math.floor(Math.random() * lanes.length)], 1.4, -19);
+            meteor.userData.kind = "meteor";
+            meteor.userData.enemyType = type;
+            meteor.userData.baseY = meteor.position.y;
+            meteor.userData.floatOffset = Math.random() * Math.PI * 2;
+            meteor.userData.hitRadius = size + 0.48;
+            meteor.userData.speed = (8 + Math.random() * 5 + elapsed * 0.12)
+                * getDifficultyMultiplier()
+                * (type === "fast" ? 1.5 : type === "heavy" ? 0.72 : 1);
+            scene.add(meteor);
+            activeObjects.push(meteor);
+        }
+
+        function createPlanets() {
+            for (let index = 0; index < 9; index += 1) {
+                const radius = index === 0 ? 1.15 : 0.74 + Math.random() * 0.25;
+                const planet = new THREE.Mesh(
+                    new THREE.SphereGeometry(radius, 24, 18),
+                    new THREE.MeshStandardMaterial({ color: [0x9f79e8, 0x5ec9c5, 0xf79e92, 0x668ee8][index % 4], roughness: 0.58, metalness: 0.18, emissive: 0x17122e })
+                );
+                planet.position.set(index === 0 ? 0 : (Math.random() - 0.5) * 5.4, -1.2, 4 - index * 3);
+                planet.castShadow = true;
+                planet.receiveShadow = true;
+                planet.userData.baseZ = planet.position.z;
+                planet.userData.passed = index === 0;
+                scene.add(planet);
+                planets.push(planet);
+                activeObjects.push(planet);
+            }
+            player.position.set(0, 0, 3.65);
+            hopHeight = 0;
+            hopVelocity = 0;
+        }
+
+        function addDashBarrier() {
+            const lane = getNextDashObstacleLane();
+            const barrier = new THREE.Group();
+            const bodyMaterial = new THREE.MeshStandardMaterial({
+                color: customAccent || 0xd8ccff,
+                emissive: 0x2b194e,
+                metalness: 0.3,
+                roughness: 0.45
+            });
+            const base = new THREE.Mesh(new THREE.BoxGeometry(1.1, 1.1, 0.75), bodyMaterial);
+            base.position.y = 0.6;
+            barrier.add(base);
+            const spike = new THREE.Mesh(
+                new THREE.ConeGeometry(0.46, 1.2, 5),
+                new THREE.MeshStandardMaterial({
+                    color: 0xff8d7a,
+                    emissive: 0x5e1d18,
+                    metalness: 0.2,
+                    roughness: 0.25
+                })
+            );
+            spike.rotation.x = Math.PI;
+            spike.position.set(0, 1.35, 0.15);
+            barrier.add(spike);
+            barrier.position.set(lane, 0, -16);
+            barrier.userData.kind = "dash-obstacle";
+            barrier.userData.speed = 9.2;
+            barrier.userData.passed = false;
+            scene.add(barrier);
+            activeObjects.push(barrier);
+        }
+
+        function beginGame() {
+            if (!authenticated) return;
+            if (isPaused) {
+                isPaused = false;
+                isPlaying = true;
+                overlay.hidden = true;
+                pauseButton.textContent = "Pause";
+                clock.getDelta();
+                return;
+            }
+            try {
+                runDuration = getSelectedDuration();
+            } catch (error) {
+                message.textContent = error.message;
+                if (getTimeMode() === "custom") customTimeInput.focus();
+                return;
+            }
+            setupWorld();
+            elapsed = 0;
+            spawnElapsed = 0;
+            powerupElapsed = 0;
+            shieldUntil = 0;
+            scoreMultiplierUntil = 0;
+            score = 0;
+            botScore = 0;
+            botMoveElapsed = 0;
+            dashPatternIndex = 0;
+            jumpCount = 0;
+            botEnabled = new URLSearchParams(window.location.search).get("opponent") === "bot" && activeGame === "catch";
+            const botScoreDisplay = document.getElementById("bot-score-display");
+            botScoreDisplay.hidden = !botEnabled;
+            document.getElementById("bot-score").textContent = "0";
+            if (botEnabled) {
+                botPlayer = player.clone(true);
+                botPlayer.position.set(3, 0.08, 2.4);
+                botPlayer.scale.setScalar(0.82);
+                scene.add(botPlayer);
+            }
+            if (activeGame === "dodge") spawnPowerup();
+            isPlaying = true;
+            isPaused = false;
+            message.textContent = "";
+            scoreLabel.textContent = "0";
+            timeLabelText.textContent = getTimeMode() === "endless" ? "ELAPSED" : "TIME";
+            timeLabel.textContent = getTimeMode() === "endless" ? "0" : String(runDuration);
+            bestLabel.textContent = localStorage.getItem(`starbound-best-${activeGame}`) || "0";
+            localStorage.setItem("starbound-difficulty", getDifficulty());
+            localStorage.setItem("starbound-time-mode", getTimeMode());
+            if (getTimeMode() === "custom") {
+                localStorage.setItem("starbound-custom-time", String(runDuration));
+            }
+            pauseButton.hidden = false;
+            pauseButton.textContent = "Pause";
+            setTimeControlsDisabled(true);
+            overlay.hidden = true;
+            clock.getDelta();
+        }
+
+        function finishGame(messageText) {
+            if (!isPlaying) return;
+            isPlaying = false;
+            isPaused = false;
+            pauseButton.hidden = true;
+            setTimeControlsDisabled(false);
+            const oldBest = Number(localStorage.getItem(`starbound-best-${activeGame}`)) || 0;
+            const newBest = Math.max(score, oldBest);
+            localStorage.setItem(`starbound-best-${activeGame}`, String(newBest));
+            bestLabel.textContent = String(newBest);
+            overlayTitle.textContent = score > oldBest ? "New personal best!" : "Nice run, space ranger!";
+            overlayDescription.textContent = `${messageText} Your score: ${score}. Ready for another go?`;
+            startButton.innerHTML = 'Play again <span aria-hidden="true">↻</span>';
+            overlay.hidden = false;
+            playSound(330, 0.25);
+            if (score > 0 && !botEnabled && !customMode) {
+                submitSoloScore(activeGame, score, Math.max(1, Math.floor(elapsed)))
+                    .then(({ updated }) => {
+                        message.textContent = updated
+                            ? "Your best run was added to the all-time leaderboard."
+                            : "Your run was submitted. Your leaderboard best remains unchanged.";
+                    })
+                    .catch((error) => {
+                        message.textContent = `Could not submit your score: ${error.message}`;
+                    });
+            }
+        }
+
+        async function submitSoloScore(gameId, runScore, elapsedSeconds) {
+            const data = { gameId, score: runScore, elapsedSeconds };
+            if (["localhost", "127.0.0.1", "::1"].includes(window.location.hostname)) {
+                const result = await httpsCallable(functions, "submitSoloScore")(data);
+                return result.data;
+            }
+            const user = auth.currentUser;
+            if (!user) throw new Error("Sign in to submit your score.");
+            const response = await fetch(`/api/submitSoloScore`, {
+                method: "POST",
+                headers: {
+                    Authorization: `Bearer ${await user.getIdToken()}`,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ data })
+            });
+            let result;
+            try {
+                result = await response.json();
+            } catch {
+                throw new Error(`The online backend returned an unreadable response (${response.status}).`);
+            }
+            if (!response.ok) throw new Error(result?.error?.message || `Score submission failed (${response.status}).`);
+            return result.data;
+        }
+
+        function togglePause() {
+            if (isPlaying) {
+                isPlaying = false;
+                isPaused = true;
+                setTimeControlsDisabled(true);
+                overlayTitle.textContent = "Paused";
+                overlayDescription.textContent = "Take a breather. Your run is saved right where you left it.";
+                startButton.innerHTML = 'Resume <span aria-hidden="true">▶</span>';
+                pauseButton.textContent = "Resume";
+                overlay.hidden = false;
+                return;
+            }
+            if (isPaused) beginGame();
+        }
+
+        function move(direction) {
+            if (!isPlaying || !player) return;
+            if (activeGame === "hop") {
+                if ((direction === "up" || direction === "jump") && hopHeight <= 0.05) {
+                    hopVelocity = 8.2;
+                    return;
+                }
+                if (direction === "left") player.position.x = Math.max(-2.8, player.position.x - 0.65);
+                if (direction === "right") player.position.x = Math.min(2.8, player.position.x + 0.65);
+                return;
+            }
+            if (activeGame === "dash") {
+                if (direction === "left") player.position.x = Math.max(-6, player.position.x - 0.8);
+                if (direction === "right") player.position.x = Math.min(6, player.position.x + 0.8);
+                if ((direction === "up" || direction === "jump") && dashJumpHeight <= 0.05) {
+                    dashJumpVelocity = 7.5;
+                }
+                return;
+            }
+            if (activeGame === "dodge") {
+                if (direction === "up") player.position.z = Math.max(-5.5, player.position.z - 0.9);
+                if (direction === "down") player.position.z = Math.min(4.2, player.position.z + 0.9);
+            }
+            if (direction === "left") player.position.x = Math.max(-6, player.position.x - 0.8);
+            if (direction === "right") player.position.x = Math.min(6, player.position.x + 0.8);
+            if (activeGame === "catch") {
+                if (direction === "up") player.position.z = Math.max(-8, player.position.z - 0.9);
+                if (direction === "down") player.position.z = Math.min(4.2, player.position.z + 0.9);
+            }
+        }
+
+        function updateCatch(delta) {
+            updateBot(delta);
+            for (let index = activeObjects.length - 1; index >= 0; index -= 1) {
+                const object = activeObjects[index];
+                if (object.userData.baseY === undefined || object.userData.kind === "powerup") continue;
+                object.rotation.y += delta * 1.6;
+                object.position.y = object.userData.baseY + Math.sin(elapsed * 2 + index) * 0.13;
+                const catchDistance = getDifficulty() === "hard" ? 0.7 : getDifficulty() === "easy" ? 1.2 : 0.95;
+                if (object.position.distanceTo(player.position) < catchDistance) {
+                    scene.remove(object);
+                    object.geometry.dispose();
+                    object.material.dispose();
+                    activeObjects.splice(index, 1);
+                    score += elapsed < scoreMultiplierUntil ? 2 : 1;
+                    scoreLabel.textContent = String(score);
+                    playSound(720, 0.08);
+                    spawnCollectible();
+                }
+            }
+        }
+
+        function updateBot(delta) {
+            if (!botEnabled || !botPlayer) return;
+            botMoveElapsed += delta;
+            if (botMoveElapsed < 0.035) return;
+            const step = botMoveElapsed;
+            botMoveElapsed = 0;
+            let closest = null;
+            let closestDistance = Infinity;
+            for (const object of activeObjects) {
+                if (object.userData.baseY === undefined || object.userData.kind === "powerup") continue;
+                const distance = object.position.distanceTo(botPlayer.position);
+                if (distance < closestDistance) {
+                    closestDistance = distance;
+                    closest = object;
+                }
+            }
+            if (!closest) return;
+            botPlayer.position.x = THREE.MathUtils.damp(botPlayer.position.x, closest.position.x, 2.8, step);
+            botPlayer.position.z = THREE.MathUtils.damp(botPlayer.position.z, closest.position.z, 2.8, step);
+            if (closestDistance < 0.9) {
+                const index = activeObjects.indexOf(closest);
+                if (index !== -1) activeObjects.splice(index, 1);
+                scene.remove(closest);
+                closest.geometry.dispose();
+                closest.material.dispose();
+                botScore += 1;
+                document.getElementById("bot-score").textContent = String(botScore);
+                spawnCollectible();
+            }
+        }
+
+        function updateDodge(delta) {
+            spawnElapsed += delta;
+            if (spawnElapsed > Math.max(0.7, 1.1 - elapsed * 0.008) / getDifficultyMultiplier()) {
+                createMeteor();
+                spawnElapsed = 0;
+            }
+            for (let index = activeObjects.length - 1; index >= 0; index -= 1) {
+                const meteor = activeObjects[index];
+                if (meteor.userData.kind !== "meteor") continue;
+                meteor.position.z += meteor.userData.speed * delta;
+                meteor.position.y = meteor.userData.baseY + Math.sin(elapsed * 3 + meteor.userData.floatOffset) * 0.12;
+                meteor.rotation.x += delta * 1.4;
+                meteor.rotation.z += delta * 1.8;
+                if (meteor.position.distanceTo(player.position) < meteor.userData.hitRadius) {
+                    if (shieldUntil > elapsed) {
+                        shieldUntil = 0;
+                        scene.remove(meteor);
+                        meteor.geometry.dispose();
+                        meteor.material.dispose();
+                        activeObjects.splice(index, 1);
+                        playSound(180, 0.18);
+                        message.textContent = "Your shield absorbed a meteor!";
+                    } else {
+                        finishGame(`A ${meteor.userData.enemyType} meteor got your ship!`);
+                        return;
+                    }
+                }
+                if (meteor.position.z > 5) {
+                    scene.remove(meteor);
+                    meteor.geometry.dispose();
+                    meteor.material.dispose();
+                    activeObjects.splice(index, 1);
+                    score += 1;
+                    scoreLabel.textContent = String(score);
+                }
+            }
+        }
+
+        function updateHop(delta) {
+            hopVelocity -= 19 * delta;
+            hopHeight += hopVelocity * delta;
+            if (hopHeight <= 0) {
+                hopHeight = 0;
+                hopVelocity = 0;
+            }
+            player.position.y = 0.15 + hopHeight;
+            player.rotation.z = THREE.MathUtils.damp(player.rotation.z, -player.position.x * 0.08, 7, delta);
+            for (const planet of planets) {
+                planet.position.z += delta * (3.3 + Math.min(elapsed * 0.1, 2)) * getDifficultyMultiplier();
+                if (!planet.userData.passed && planet.position.z > 4.5) {
+                    planet.userData.passed = true;
+                    if (!(Math.abs(player.position.x - planet.position.x) < 1.45 && hopHeight < 1.05)) {
+                        if (shieldUntil > elapsed) {
+                            shieldUntil = 0;
+                            playSound(180, 0.18);
+                        } else {
+                            finishGame("You missed the next planet!");
+                            return;
+                        }
+                    } else {
+                        score += 1;
+                        jumpCount += 1;
+                        scoreLabel.textContent = String(score);
+                    }
+                }
+                if (planet.position.z > 8) {
+                    planet.position.z = -23 - Math.random() * 8;
+                    planet.position.x = (Math.random() - 0.5) * 5.4;
+                    planet.userData.passed = false;
+                }
+            }
+        }
+
+        function getNextDashObstacleLane() {
+            dashObstacleCount += 1;
+            if (dashObstacleCount % 3 === 0) {
+                lastDashObstacleLane = 0;
+                return 0;
+            }
+            const lanes = [-4.8, -2.4, 2.4, 4.8];
+            const availableLanes = lanes.filter((lane) => lane !== lastDashObstacleLane);
+            const lane = availableLanes[Math.floor(Math.random() * availableLanes.length)];
+            lastDashObstacleLane = lane;
+            return lane;
+        }
+
+        function spawnDashObstacle() {
+            const lane = getNextDashObstacleLane();
+            const obstacle = new THREE.Group();
+            const blockMaterial = new THREE.MeshStandardMaterial({
+                color: customAccent || 0xd8ccff,
+                emissive: 0x2a174b,
+                metalness: 0.3,
+                roughness: 0.5
+            });
+            const base = new THREE.Mesh(new THREE.BoxGeometry(1.1, 1.1, 0.8), blockMaterial);
+            base.position.y = 0.55;
+            obstacle.add(base);
+            const spike = new THREE.Mesh(
+                new THREE.ConeGeometry(0.48, 1.2, 5),
+                new THREE.MeshStandardMaterial({
+                    color: 0xff8d7a,
+                    emissive: 0x5d1a17,
+                    metalness: 0.2,
+                    roughness: 0.3
+                })
+            );
+            spike.rotation.x = Math.PI;
+            spike.position.set(0, 1.3, 0.15);
+            obstacle.add(spike);
+            obstacle.position.set(lane, 0, -18);
+            obstacle.userData.kind = "dash-obstacle";
+            obstacle.userData.speed = 8.5 + elapsed * 0.08;
+            obstacle.userData.passed = false;
+            scene.add(obstacle);
+            activeObjects.push(obstacle);
+        }
+
+        function updateDash(delta) {
+            const difficultyMultiplier = getDifficultyMultiplier();
+            dashJumpVelocity -= 18 * delta;
+            dashJumpHeight += dashJumpVelocity * delta;
+            if (dashJumpHeight <= 0) {
+                dashJumpHeight = 0;
+                dashJumpVelocity = 0;
+            }
+            player.position.y = 0.15 + dashJumpHeight;
+            player.rotation.z = THREE.MathUtils.damp(player.rotation.z, -player.position.x * 0.05, 7, delta);
+
+            const builtPattern = customMode?.config?.pattern;
+            if (Array.isArray(builtPattern) && builtPattern.length) {
+                const stepInterval = Math.max(0.7, 1.2 - elapsed * 0.012) / difficultyMultiplier;
+                spawnElapsed += delta;
+                if (spawnElapsed > stepInterval) {
+                    if (builtPattern[dashPatternIndex % builtPattern.length] === "spike") {
+                        spawnDashObstacle();
+                    }
+                    dashPatternIndex += 1;
+                    spawnElapsed = 0;
+                }
+            } else {
+                spawnElapsed += delta;
+                const spawnInterval = Math.max(0.72, 1.35 - elapsed * 0.018) / difficultyMultiplier;
+                if (spawnElapsed > spawnInterval) {
+                    spawnDashObstacle();
+                    spawnElapsed = 0;
+                }
+            }
+
+            for (let index = activeObjects.length - 1; index >= 0; index -= 1) {
+                const object = activeObjects[index];
+                if (object.userData.kind !== "dash-obstacle") continue;
+                object.position.z += object.userData.speed * delta * difficultyMultiplier;
+                const closeX = Math.abs(object.position.x - player.position.x) < 1.0;
+                const closeZ = Math.abs(object.position.z - player.position.z) < 1.15;
+                const grounded = player.position.y < 0.9;
+                if (!object.userData.passed && object.position.z > player.position.z + 0.8) {
+                    object.userData.passed = true;
+                    score += 1;
+                    scoreLabel.textContent = String(score);
+                }
+                if (closeX && closeZ && grounded) {
+                    if (shieldUntil > elapsed) {
+                        shieldUntil = 0;
+                        scene.remove(object);
+                        object.traverse((child) => {
+                            child.geometry?.dispose();
+                            if (Array.isArray(child.material)) child.material.forEach((material) => material.dispose());
+                            else child.material?.dispose();
+                        });
+                        activeObjects.splice(index, 1);
+                        playSound(180, 0.18);
+                    } else {
+                        finishGame("You clipped an obstacle!");
+                        return;
+                    }
+                }
+                if (object.position.z > 10) {
+                    scene.remove(object);
+                    object.traverse((child) => {
+                        child.geometry?.dispose();
+                        if (Array.isArray(child.material)) child.material.forEach((material) => material.dispose());
+                        else child.material?.dispose();
+                    });
+                    activeObjects.splice(index, 1);
+                }
+            }
+        }
+
+        function updatePowerups(delta) {
+            if (!isPlaying || !player) return;
+            powerupElapsed += delta;
+            if (powerupElapsed >= 5 && !activeObjects.some((object) => object.userData.kind === "powerup")) {
+                spawnPowerup();
+                powerupElapsed = 0;
+            }
+
+            for (let index = activeObjects.length - 1; index >= 0; index -= 1) {
+                const powerup = activeObjects[index];
+                if (powerup.userData.kind !== "powerup") continue;
+                powerup.rotation.y += delta * 2;
+                powerup.position.y = powerup.userData.baseY + Math.sin(elapsed * 3 + powerup.userData.floatOffset) * 0.12;
+                if (activeGame === "dodge") powerup.position.z += powerup.userData.speed * delta;
+                if (activeGame === "hop") powerup.position.z += (powerup.userData.speed + Math.min(elapsed * 0.1, 2)) * getDifficultyMultiplier() * delta;
+                if (activeGame === "dash") powerup.position.z += powerup.userData.speed * getDifficultyMultiplier() * delta;
+
+                const caught = activeGame === "catch"
+                    ? Math.abs(powerup.position.x - player.position.x) < 1.5
+                        && Math.abs(powerup.position.y - player.position.y) < 0.9
+                        && Math.abs(powerup.position.z - player.position.z) < 1.35
+                    : Math.abs(powerup.position.x - player.position.x) < 1.5
+                        && Math.abs(powerup.position.y - player.position.y) < 0.9
+                        && Math.abs(powerup.position.z - player.position.z) < 1.5;
+                if (caught) {
+                    removePowerup(powerup, index);
+                    powerupElapsed = 0;
+                    if (activeGame === "catch") {
+                        scoreMultiplierUntil = elapsed + 8;
+                        message.textContent = "STAR BOOST! Collect stars for double points for 8 seconds.";
+                    } else {
+                        shieldUntil = elapsed + 8;
+                        message.textContent = "SHIELD ON! It will protect you from your next hit.";
+                    }
+                    playSound(1040, 0.16);
+                } else if (powerup.position.z > 9 || elapsed >= powerup.userData.expiresAt) {
+                    removePowerup(powerup, index);
+                    powerupElapsed = 0;
+                }
+            }
+        }
+
+        function animate() {
+            if (disposed || !renderer) return;
+            const delta = Math.min(clock.getDelta(), 0.05);
+            const elapsedTime = clock.elapsedTime;
+            if (isPlaying) {
+                elapsed += delta;
+                timeLabel.textContent = Number.isFinite(runDuration)
+                    ? String(Math.max(0, Math.ceil(runDuration - elapsed)))
+                    : String(Math.floor(elapsed));
+                updatePowerups(delta);
+                updatePowerupStatus();
+                if (activeGame === "catch") updateCatch(delta);
+                if (activeGame === "dodge") updateDodge(delta);
+                if (activeGame === "hop") updateHop(delta);
+                if (activeGame === "dash") updateDash(delta);
+                if (Number.isFinite(runDuration) && elapsed >= runDuration) finishGame("Time is up!");
+            }
+            if (player) {
+                const flame = player.getObjectByName("engine-flame");
+                if (flame) flame.scale.y = 0.75 + Math.sin(elapsedTime * 22) * 0.18;
+            }
+            if (botPlayer) {
+                const flame = botPlayer.getObjectByName("engine-flame");
+                if (flame) flame.scale.y = 0.75 + Math.sin(elapsedTime * 19) * 0.18;
+            }
+            renderer.render(scene, camera);
+        }
+
+        function chooseGame(gameId) {
+            if (!authenticated || !gameNames[gameId]) return;
+            activeGame = gameId;
+            isPlaying = false;
+            isPaused = false;
+            pauseButton.hidden = true;
+            document.querySelector(".jump-control").hidden = !["hop", "dash"].includes(gameId);
+            document.querySelector('[data-move="down"]').hidden = gameId === "dash";
+            document.querySelector('[data-move="up"]').setAttribute(
+                "aria-label",
+                gameId === "dodge" ? "Move to the previous lane" : gameId === "dash" ? "Jump" : "Move up or jump"
+            );
+            document.querySelector('[data-move="down"]').setAttribute(
+                "aria-label",
+                gameId === "dodge" ? "Move to the next lane" : "Move down"
+            );
+            const savedDifficulty = localStorage.getItem("starbound-difficulty");
+            difficultySelect.disabled = Boolean(customMode);
+            difficultySelect.value = customMode?.config?.difficulty
+                || (["easy", "normal", "hard"].includes(savedDifficulty) ? savedDifficulty : "normal");
+            const savedTimeMode = localStorage.getItem("starbound-time-mode");
+            timeModeSelect.value = ["default", "custom", "endless"].includes(savedTimeMode) ? savedTimeMode : "default";
+            const savedCustomTime = Number(localStorage.getItem("starbound-custom-time"));
+            customTimeInput.value = Number.isSafeInteger(savedCustomTime)
+                && savedCustomTime >= 1
+                && savedCustomTime <= 999999999999999
+                ? String(savedCustomTime)
+                : "60";
+            setTimeControlsDisabled(false);
+            updateTimeControls();
+            customTimeInput.disabled = getTimeMode() !== "custom";
+            picker.hidden = true;
+            stage.hidden = false;
+            document.getElementById("active-game-name").textContent = customMode?.levelName || customMode?.title || gameNames[gameId].title;
+            document.getElementById("active-game-instruction").textContent = customMode?.levelName ? "Custom level" : gameNames[gameId].instruction;
+            overlayTitle.textContent = "Ready for liftoff?";
+            overlayDescription.textContent = gameNames[gameId].description;
+            startButton.innerHTML = 'Start game <span aria-hidden="true">→</span>';
+            scoreLabel.textContent = "0";
+            bestLabel.textContent = localStorage.getItem(`starbound-best-${gameId}`) || "0";
+            overlay.hidden = false;
+            initializeRenderer();
+            setupWorld();
+        }
+
+        function returnToPicker() {
+            isPlaying = false;
+            isPaused = false;
+            botEnabled = false;
+            document.getElementById("bot-score-display").hidden = true;
+            customMode = null;
+            customAccent = null;
+            stage.hidden = true;
+            picker.hidden = false;
+            message.textContent = "";
+            difficultySelect.disabled = false;
+            setTimeControlsDisabled(false);
+            clearWorld();
+        }
+
+        document.querySelectorAll("[data-game]").forEach((button) => {
+            button.addEventListener("click", () => {
+                try {
+                    chooseGame(button.dataset.game);
+                } catch (error) {
+                    message.textContent = `Could not open this game: ${error.message}`;
+                }
+            });
+        });
+        document.getElementById("back-to-games").addEventListener("click", returnToPicker);
+        startButton.addEventListener("click", beginGame);
+        pauseButton.addEventListener("click", togglePause);
+        timeModeSelect.addEventListener("change", () => {
+            message.textContent = "";
+            updateTimeControls();
+            customTimeInput.disabled = getTimeMode() !== "custom" || isPlaying || isPaused;
+        });
+        customTimeInput.addEventListener("input", () => {
+            message.textContent = "";
+            if (getTimeMode() === "custom") {
+                timeLabel.textContent = customTimeInput.value || "—";
+            }
+        });
+        soundButton.addEventListener("click", () => {
+            soundEnabled = !soundEnabled;
+            localStorage.setItem("starbound-sound", soundEnabled ? "on" : "off");
+            updateSoundButton();
+            playSound(660, 0.08);
+        });
+        updateSoundButton();
+        document.querySelectorAll("[data-move]").forEach((button) => {
+            button.addEventListener("click", () => move(button.dataset.move));
+        });
+        document.addEventListener("keydown", (event) => {
+            if (event.key === "p" || event.key === "P" || event.key === "Escape") {
+                if (isPlaying || isPaused) {
+                    event.preventDefault();
+                    togglePause();
+                }
+                return;
+            }
+            const direction = {
+                ArrowUp: "up", w: "up", W: "up", ArrowDown: "down", s: "down", S: "down",
+                ArrowLeft: "left", a: "left", A: "left", ArrowRight: "right", d: "right", D: "right", " ": "jump"
+            }[event.key];
+            if (direction && isPlaying) {
+                event.preventDefault();
+                move(direction);
+            }
+        });
+
+        async function openRequestedGame() {
+            const params = new URLSearchParams(window.location.search);
+            let requestedGame = params.get("game");
+            if (!requestedGame || !gameNames[requestedGame]) return;
+            const customId = params.get("custom");
+            if (customId) {
+                const customSnapshot = await getDoc(doc(db, "games", customId));
+                if (!customSnapshot.exists() || customSnapshot.data().status !== "published") {
+                    throw new Error("That community game is unavailable.");
+                }
+                customMode = customSnapshot.data();
+                const template = gameNames[customMode.config.gameType];
+                if (!template) throw new Error("That game uses an unsupported template.");
+                customAccent = new THREE.Color(customMode.config.accent || "#a78bfa").getHex();
+                requestedGame = customMode.config.gameType;
+            }
+            chooseGame(requestedGame);
+            if (customMode) overlayDescription.textContent = `${customMode.description} · ${customMode.config.difficulty} mode`;
+            if (params.get("opponent") === "bot") {
+                overlayDescription.textContent = "A local computer pilot is racing you for stars. Its score never goes to ranked.";
+            }
+        }
+
+        onAuthStateChanged(auth, (user) => {
+            window.__starboundAuthResolved = true;
+            if (!user) {
+                window.location.replace(`index.html${window.location.search}`);
+                return;
+            }
+            authenticated = true;
+            authCheck.hidden = true;
+            arcade.hidden = false;
+            syncPlayerLink(user).catch((error) => {
+                message.textContent = `Could not create your player link: ${error.message}`;
+            });
+            openRequestedGame().catch((error) => {
+                message.textContent = `Could not open game: ${error.message}`;
+            });
+        }, (error) => {
+            window.__starboundAuthResolved = true;
+            authCheck.textContent = `Could not verify your sign-in: ${error.message}`;
+        });
+
+        window.addEventListener("pagehide", () => {
+            disposed = true;
+            renderer?.setAnimationLoop(null);
+            resizeObserver?.disconnect();
+            renderer?.dispose();
+            clearWorld();
+        }, { once: true });
+    </script>
+    <script>
+        window.__starboundAuthResolved = false;
+        window.setTimeout(() => {
+            if (window.__starboundAuthResolved) return;
+            const status = document.getElementById("auth-check");
+            if (!status || status.hidden) return;
+            status.textContent = "Sign-in check is taking too long. Check your connection and, on localhost, make sure the Firebase emulators are running. ";
+            const link = document.createElement("a");
+            link.href = "index.html";
+            link.textContent = "Return to sign in";
+            status.append(link);
+        }, 12000);
+    </script>
+</body>
+</html>
