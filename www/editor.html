@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#11102c">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="stylesheet" href="styles.css?v=20261025">
+    <link rel="stylesheet" href="editor.css">
+    <title>Level Editor | Starbound Arcade</title>
+</head>
+<body class="editor-page">
+    <main class="page-shell editor-shell">
+        <header class="editor-topbar">
+            <a class="brand" href="community.html" aria-label="Starbound Arcade hub">
+                <span class="brand-mark" aria-hidden="true">✦</span>
+                <span>STARBOUND <span class="brand-light">ARCADE</span></span>
+            </a>
+            <div class="editor-topbar-actions">
+                <a class="back-link" href="community.html">← Arcade hub</a>
+                <a id="top-test-level" class="fullscreen-button editor-fullscreen" href="game.html?game=dash&amp;editor=1">Test in Sky Dash ↗</a>
+            </div>
+        </header>
+
+        <section class="editor-heading">
+            <span class="game-overline">SKY DASH · CREATE MODE</span>
+            <h1>Make a <span>new world.</span></h1>
+            <p>Shape the colors, lay out the hazards, then test your level in Sky Dash.</p>
+        </section>
+
+        <section class="editor-workspace" aria-label="Sky Dash level editor">
+            <aside class="editor-panel editor-level-panel">
+                <div class="editor-panel-heading">
+                    <span class="game-overline">YOUR LEVEL</span>
+                    <span class="editor-step-count" id="step-count">0 / 24</span>
+                </div>
+                <label class="editor-label" for="level-name">Level name</label>
+                <input id="level-name" class="editor-input" type="text" maxlength="48" value="Neon Run" placeholder="Name your level">
+
+                <div class="editor-divider"></div>
+                <span class="editor-label">Place an object</span>
+                <div class="editor-tools" role="group" aria-label="Editor tools">
+                    <button class="editor-tool is-active" type="button" data-tool="spike" aria-pressed="true">
+                        <span class="tool-icon tool-spike" aria-hidden="true"></span><span>Spike</span>
+                    </button>
+                    <button class="editor-tool" type="button" data-tool="block" aria-pressed="false">
+                        <span class="tool-icon tool-block" aria-hidden="true"></span><span>Block</span>
+                    </button>
+                    <button class="editor-tool" type="button" data-tool="empty" aria-pressed="false">
+                        <span class="tool-icon tool-erase" aria-hidden="true">⌫</span><span>Erase</span>
+                    </button>
+                </div>
+                <p class="editor-hint">Choose a tool, then tap a beat in the timeline to place or remove an obstacle.</p>
+
+                <div class="editor-divider"></div>
+                <div class="editor-level-actions">
+                    <button id="clear-level" class="button button-quiet" type="button">Clear pattern</button>
+                    <button id="reset-editor" class="button button-quiet" type="button">Reset editor</button>
+                </div>
+            </aside>
+
+            <div class="editor-main">
+                <div class="editor-canvas-panel">
+                    <div class="editor-canvas-toolbar">
+                        <span><i class="editor-live-dot"></i> LIVE PREVIEW</span>
+                        <span>SKY DASH · 24 BEATS</span>
+                    </div>
+                    <div id="level-preview" aria-label="Live Three.js preview of your Sky Dash level">
+                        <div class="preview-level-label"><b id="preview-level-name">NEON RUN</b><small>PREVIEW · TAP THE TIMELINE TO EDIT</small></div>
+                    </div>
+                    <div class="editor-preview-footer">
+                        <span>← / → MOVE</span><span>↑ / SPACE JUMP</span><span>LOCAL PREVIEW</span>
+                    </div>
+                </div>
+
+                <section class="editor-timeline-panel" aria-labelledby="timeline-title">
+                    <div class="editor-panel-heading">
+                        <div><span class="game-overline">LEVEL TIMELINE</span><h2 id="timeline-title">Build your run</h2></div>
+                        <span class="timeline-legend"><i></i> Empty <i class="legend-spike"></i> Spike <i class="legend-block"></i> Block</span>
+                    </div>
+                    <div id="level-timeline" class="editor-timeline" role="group" aria-label="24-beat obstacle timeline"></div>
+                    <p class="editor-hint">Each beat is one moment in your run. Empty beats leave room to move.</p>
+                </section>
+            </div>
+
+            <aside class="editor-panel editor-look-panel">
+                <div class="editor-panel-heading">
+                    <div><span class="game-overline">WORLD LOOK</span><h2>Set the mood</h2></div>
+                    <span class="editor-sparkle" aria-hidden="true">✦</span>
+                </div>
+                <label class="color-setting" for="background-color">
+                    <span><b>Sky</b><small>Background and horizon</small></span>
+                    <input id="background-color" type="color" value="#11102c">
+                </label>
+                <label class="color-setting" for="ground-color">
+                    <span><b>Ground</b><small>Track and grid</small></span>
+                    <input id="ground-color" type="color" value="#211d42">
+                </label>
+                <label class="color-setting" for="player-color">
+                    <span><b>Runner</b><small>Your ship's main color</small></span>
+                    <input id="player-color" type="color" value="#d8ccff">
+                </label>
+                <label class="color-setting" for="obstacle-color">
+                    <span><b>Hazards</b><small>Blocks and spikes</small></span>
+                    <input id="obstacle-color" type="color" value="#ff8d7a">
+                </label>
+                <div class="editor-divider"></div>
+                <div class="editor-save-card">
+                    <span class="game-overline">READY TO RUN?</span>
+                    <p>Your level and look are saved on this device.</p>
+                    <button id="save-level" class="button button-primary" type="button">Save level <span aria-hidden="true">✓</span></button>
+                    <a id="test-level" class="button button-quiet" href="game.html?game=dash&amp;editor=1">Test level <span aria-hidden="true">→</span></a>
+                    <p id="editor-status" class="editor-status" role="status" aria-live="polite"></p>
+                </div>
+            </aside>
+        </section>
+
+        <footer class="site-footer"><span>✦</span> BUILT FOR YOUR NEXT LITTLE ADVENTURE · &copy; 2026 STARBOUND DEVELOPING INC · <a href="community.html">ARCADE HUB</a></footer>
+    </main>
+    <script type="module" src="fullscreen.js"></script>
+    <script type="module" src="editor.js"></script>
+</body>
+</html>

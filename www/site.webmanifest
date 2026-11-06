@@ -1,0 +1,16 @@
+{
+  "name": "Starbound Arcade",
+  "short_name": "Starbound",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#11102c",
+  "theme_color": "#11102c",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

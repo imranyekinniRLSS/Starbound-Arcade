@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "218140270644",
+    "firebase_url": "https://sign-up-login-82aee-default-rtdb.firebaseio.com",
+    "project_id": "sign-up-login-82aee",
+    "storage_bucket": "sign-up-login-82aee.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:218140270644:android:a8f8cb68194c2b7fc36a61",
+        "android_client_info": {
+          "package_name": "com.starboundarcade.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "218140270644-cas5vmqsmtaon7l5v7egoq6l9egrnu80.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDOpzbOfmBtTbcWwsZ5oULHwZwjSVUMLN4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "218140270644-cas5vmqsmtaon7l5v7egoq6l9egrnu80.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

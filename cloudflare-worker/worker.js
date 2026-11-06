@@ -90,6 +90,8 @@ function originAllowed(origin) {
     return [
         "https://www.starboundarcade.com",
         "https://starboundarcade.com",
+        "https://localhost",
+        "capacitor://localhost",
         "http://localhost:6464",
         "http://127.0.0.1:6464"
     ].includes(origin);

@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Starbound Arcade</string>
+    <string name="title_activity_main">Starbound Arcade</string>
+    <string name="package_name">com.starboundarcade.app</string>
+    <string name="custom_url_scheme">com.starboundarcade.app</string>
+</resources>
